@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-from sqlalchemy import Table, create_engine, MetaData, Column, String, Integer, Date
+from sqlalchemy import Table, create_engine, MetaData, Column, String, Integer, Date, UniqueConstraint
 engine = create_engine("sqlite:///../database.db", echo = True)
 meta = MetaData()
 
@@ -29,7 +29,7 @@ PAYMENT = Table(
     Column('PAYMENT AMOUNT',Integer),
     Column('PAYMENT METHOD', String),
     Column('TXN ID',Integer),
-
+    UniqueConstraint('TXN ID'),
 )
 
 
