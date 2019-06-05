@@ -3,6 +3,7 @@
 from sqlalchemy import Table, create_engine, MetaData, Column, String, Integer, Date, UniqueConstraint
 engine = create_engine("sqlite:///../database.db", echo = True)
 meta = MetaData()
+Connection = engine.connect()
 
 RESERVATION = Table(
     'RESERVATION', meta,
@@ -33,5 +34,5 @@ PAYMENT = Table(
 )
 
 
-#Create Table
-meta.create_all(engine)
+##Create Table
+#meta.create_all(engine)
