@@ -1,8 +1,7 @@
 #!/usr/bin/python3
 from flask import request
 import json
-from Init import db, app
-from Models import Reservations
+from Models import Reservations, app, db
 
 @app.route('/')
 def Fetch():
