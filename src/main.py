@@ -31,8 +31,12 @@ PAYMENT = Table(
     Column('PAYMENT METHOD', String),
     Column('TXN ID',Integer),
     UniqueConstraint('TXN ID'),
+    Column('RESERVATION ID',String),
+    Column('DATETIME STAMP',Date),
+    Column('CREATOR', String),
+    Column('COMMENTS',String),
 )
 
 
 ##Create Table
-#meta.create_all(engine)
+meta.create_all(engine)
