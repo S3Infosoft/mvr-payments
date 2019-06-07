@@ -67,9 +67,7 @@ def Select(method,data):
 
 @app.route('/v1/Create/', methods = ['POST'])
 def Create():
-    print(request.is_json)
     data = request.get_json()
-    print(data)
     user = Reservations(data['Reservation Date'],
                         data['Reservation From'],
                         data['Check in Date'],
@@ -98,6 +96,82 @@ def Delete(uid):
     db.session.commit()
     flash('data for ID %s Deleted Successfully'%uid)
     return redirect(url_for('All'))
+
+@app.route('/v1/Update/<uid>',methods=['POST'])
+def Update(uid):
+    data = request.get_json()
+    user_to_update = Reservations.query.filter_by(ID = uid).first()
+    try:
+        user_to_update.RDATE = data['Reservation Date']
+    except KeyError:
+        pass
+
+    try:
+        user_to_update.RFROM = data['Reservation From']
+    except KeyError:
+        pass
+
+    try:
+        user_to_update.CKINDATE = data['Check in Date']
+    except KeyError:
+        pass
+
+    try:
+        user_to_update.CKOUTDATE = data['Check Out Date']
+    except KeyError:
+        pass
+
+    try:
+        user_to_update.GNAME = data['Guest Name']
+    except KeyError:
+        pass
+
+    try:
+        user_to_update.GEMAIL = data['Guest Email']
+    except KeyError:
+        pass
+
+    try:
+        user_to_update.GMOBNUM = data['Guest Contact No.']
+    except KeyError:
+        pass
+
+    try:
+        user_to_update.BOOKAMNT = data['Guest Email']
+    except KeyError:
+        pass
+
+    try:
+        user_to_update.COMAMNT = data['Commission Amount']
+    except KeyError:
+        pass
+
+    try:
+        user_to_update.COMTAX = data['Commission Tax']
+    except KeyError:
+        pass
+
+    try:
+        user_to_update.TOTCOM = data['Total Commission']
+    except KeyError:
+        pass
+
+    try:
+        user_to_update.AMNTREC = data['Amount Recivable']
+    except KeyError:
+        pass
+
+    try:
+        user_to_update.CMNT = data['Comment']
+    except KeyError:
+        pass
+    
+    db.session.commit()
+
+    flash("Data Updated Successfully")
+
+    return redirect(url_for('All'))
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
