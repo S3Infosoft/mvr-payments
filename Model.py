@@ -16,4 +16,19 @@ class Reservations(db.Model):
     AMNTREC = db.Column('AMOUNT RECEIVABLE', db.Integer)
     CMNT = db.Column('COMMENTS', db.String(500))
 
+    def __init__(self,RDATE, RFROM, CKINDATE,CKOUTDATE, GNAME, GEMAIL, GMOBNUM, BOOKAMNT, COMAMNT, COMTAX, TOTCOM, AMNTREC, CMNT):
+        self.RDATE = RDATE
+        self.RFROM = RFROM
+        self.CKINDATE = CKINDATE
+        self.CKOUTDATE = CKOUTDATE
+        self.GNAME = GNAME
+        self.GEMAIL = GEMAIL
+        self.GMOBNUM = GMOBNUM
+        self.BOOKAMNT = BOOKAMNT
+        self.COMAMNT = COMAMNT
+        self.COMTAX = COMTAX
+        self.TOTCOM = TOTCOM
+        self.AMNTREC = AMNTREC
+        self.CMNT = CMNT
+
 db.create_all()
