@@ -58,5 +58,14 @@ if __name__ == '__main__':
                 if res.ok:
                         print("Data Updated")
         
+        elif sys.argv[1] == 'AuthUser' and len(sys.argv) == 4:
+                data_file = sys.argv[3]
+                with open(data_file) as f:
+                        data = json.load(f)
+                url = __url__ + '/' + __ver__ + "/auth/" + sys.argv[2]
+
+                res = requests.post(url,json=data)
+                if res.ok:
+                        print("AuthUser Created")
         else:
                 print(HELP_MSG)
