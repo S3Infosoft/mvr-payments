@@ -1,4 +1,5 @@
 from init import db
+import hashlib
 
 class Reservations(db.Model):
     ID = db.Column('ID',db.Integer,primary_key = True)
@@ -31,4 +32,18 @@ class Reservations(db.Model):
         self.AMNTREC = AMNTREC
         self.CMNT = CMNT
 
+class AuthUser(db.Model):
+    __tablename__ = 'AuthUser'
+    id = db.Column(db.Integer,primary_key = True)
+    user = db.Column(db.String(32),index = True, unique = True)
+    pass_hash = db.Column(db.String(260))
+
+    def __hash__(self,password):
+        hashobj = hashlib.sha224(password.encode())
+        self.pass_hash = hashobj.digest()
+    
+    def verify(self,password):
+        hashobj = hashlib.sha224(password.encode())
+        return self.pass_hash == hashobj.digest()
+        
 db.create_all()
