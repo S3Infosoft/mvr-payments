@@ -1,16 +1,8 @@
-FROM ubuntu:18.04
-
-RUN apt update -y && \
-    apt install -y python3 python3-pip python3-dev
-
-COPY ./requirements.txt /app/requirements.txt
-
-WORKDIR /app
-
-RUN pip3 install -r requirements.txt
+FROM python:3.7-alpine
 
 COPY . /app
+WORKDIR /app
 
-ENTRYPOINT [ "python3" ]
+RUN pip install -r requirements.txt
 
-CMD [ "app.py" ]
+CMD [ "python","app.py" ]
