@@ -1,9 +1,33 @@
 #!/usr/bin/python3
 from init import app, db
-from Model import Reservations
+from Model import Reservations,AuthUser
+from auth import auth
 import json
-from flask import request, jsonify, flash, url_for,redirect
+from flask import request, jsonify, flash, url_for,redirect, abort
+
+@app.route('/v1/auth/<admin_pass>',methods = ['POST'])
+def NewUser(admin_pass):
+    admin = AuthUser.query.filter_by(user = 'admin').first()
+    if not admin.verify(admin_pass):
+        abort(406)
+
+    data = request.get_json()
+    try:
+        if AuthUser.query.filter_by(user = data['userid']).first() is not None:
+            abort(406)
+        
+        user = AuthUser(user = data['userid'])
+        user.__hash__(data['password'])
+        db.session.add(user)
+        db.session.commit()
+
+        return redirect(url_for('All'))
+
+    except KeyError as e:
+        abort(400)
+
 @app.route('/')
+@auth.login_required
 def All():
     users = Reservations.query.all()
     allusers = []
@@ -31,6 +55,7 @@ def All():
     return json.dumps(allusers)
 
 @app.route('/v1/Select/<method>/<data>')
+@auth.login_required
 def Select(method,data):
     if (method == 'id'):
         selected_users = Reservations.query.filter_by(ID = data).all()
@@ -66,6 +91,7 @@ def Select(method,data):
     return json.dumps(all_selected)
 
 @app.route('/v1/Create/', methods = ['POST'])
+@auth.login_required
 def Create():
     data = request.get_json()
     user = Reservations(data['Reservation Date'],
@@ -90,6 +116,7 @@ def Create():
     return redirect(url_for('All'))
 
 @app.route('/v1/Delete/<uid>')
+@auth.login_required
 def Delete(uid):
     user_to_delete = Reservations.query.filter_by(ID = uid).all()[0]
     db.session.delete(user_to_delete)
@@ -98,6 +125,7 @@ def Delete(uid):
     return redirect(url_for('All'))
 
 @app.route('/v1/Update/<uid>',methods=['POST'])
+@auth.login_required
 def Update(uid):
     data = request.get_json()
     user_to_update = Reservations.query.filter_by(ID = uid).first()
