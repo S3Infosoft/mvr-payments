@@ -2,70 +2,97 @@ import requests
 import sys
 import json
 
-__url__ = 'http://0.0.0.0:5000'
-__ver__ = 'v1'
+class Query:
+        def __init__(self,user,pswd):
+                self.user = user
+                self.pswd = pswd
+                self.__url__ = 'http://0.0.0.0:5000'
+                self.__ver__ = 'v1'
+                self.URL = self.__url__ + '/' + self.__ver__
 
-HELP_MSG = """
-Create <json-file>       :       To Create Database
-Update <id> <json-file>  :       To Update Database
-Select id <id>           :       List User of Selected ID
-Delete <id>              :       Delete User of Specified ID
-"""
+        def Select(self,Arg):
+                if '=' in Arg:
+                        col = Arg[:Arg.find('=')]
+                        val = Arg[Arg.find('=') + 1:]
+                        dmp_url = self.URL + '/Select/' + col + '/' + val
+                else:
+                        dmp_url = self.__url__
+
+                res = requests.get(dmp_url,auth=(self.user,self.pswd))
+                if res.ok:
+                        return(res.json())
+                else:
+                        return res
+        
+        def Create(self,Args):
+                with open(Args) as f:
+                        data = json.load(f)
+                res = requests.post(self.URL + '/Create',json=data,auth=(self.user,self.pswd))
+                if res.ok:
+                        return res.json()
+                else:
+                        return res
+        
+        def Delete(self,Arg):
+                
+                res = requests.get(self.URL + '/Delete/' + Arg,auth=(self.user,self.pswd))
+                if res.ok:
+                        return res.json()
+                else:
+                        return res
+
+        def Update(self,Arg):
+
+                with open(Arg) as f:
+                        data = json.load(f)
+                
+                print('id : ',data['id'])
+                res = requests.post(self.URL + '/Update/' + str(data['id']),json=data,auth=(self.user,self.pswd))
+                if res.ok:
+                        return res.json()
+                else:
+                        return res
+
+        def Help(self):
+                print("_Help_Here_")
+
+
+options = ['select','create','delete','update','addadmin']
 
 if __name__ == '__main__':
 
-        if len(sys.argv) == 1:
-                print(HELP_MSG)
-        
-        elif sys.argv[1] == 'Select':
-                if sys.argv[2] == 'all':
-                        res = requests.get(__url__)
-                        if res.ok:
-                                print(res.json())
-                elif len(sys.argv) == 4:
-                        url = __url__ + '/' + __ver__ + '/Select/' + sys.argv[2] + '/' + sys.argv[3]
-                        res = requests.get(url)
-                        if res.ok:
-                                print(res.json())
+        user       = None
+        password   = None
+        cmd_found  = False
+        option     = None
+        Arg        = None
+        for i in sys.argv[1:]:
+                if "-u=" in i:
+                        user = i[3:]
+
+                elif "-p=" in i:
+                        password = i[3:]
+
+                elif i in options and not cmd_found:
+                        option = i
+                        cmd_found = True
+                
                 else:
-                        print("Either use 'Select all' or 'Select id <id>'")
+                        Arg = i
 
-        elif sys.argv[1] == 'Create' and len(sys.argv) == 3:
-                data_file = sys.argv[2]
-                with open(data_file) as f:
-                        data = json.load(f)
-                url = __url__ + '/' + __ver__ + '/Create'
-                res = requests.post(url,json=data)
-                
-                if res.ok:
-                        print("Data Created")
+        q = Query(user,password)
 
-        elif sys.argv[1] == 'Delete' and len(sys.argv) == 3:
-                url = __url__ + '/' + __ver__ + '/Delete/' + sys.argv[2]
-                res = requests.get(url)
-
-                if res.ok:
-                        print("Data for %s Deleted"%sys.argv[2])
-
-        elif sys.argv[1] == 'Update' and len(sys.argv) == 4:
-                data_file = sys.argv[3]
-                with open(data_file) as f:
-                        data = json.load(f)
-                
-                url = __url__ + '/' + __ver__ + '/Update/' + sys.argv[2]
-
-                res = requests.post(url,json=data)
-                if res.ok:
-                        print("Data Updated")
+        if option == 'select':
+                print(q.Select(Arg))
         
-        elif sys.argv[1] == 'AuthUser' and len(sys.argv) == 4:
-                data_file = sys.argv[3]
-                with open(data_file) as f:
-                        data = json.load(f)
-                url = __url__ + '/' + __ver__ + "/auth/" + sys.argv[2]
+        elif option == 'update':
+                print(q.Update(Arg))
 
-                res = requests.post(url,json=data)
-                if res.ok:
-                        print("AuthUser Created")
+        elif option == 'create':
+                print(q.Create(Arg))
+
+        elif option == 'delete':
+                print(q.Delete(Arg))
         else:
-                print(HELP_MSG)
+                print("___Help__Here___")
+
