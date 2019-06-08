@@ -9,11 +9,11 @@ from flask import request, jsonify, flash, url_for,redirect, abort
 def NewUser(admin_pass):
     admin = AuthUser.query.filter_by(user = 'admin').first()
     if not admin.verify(admin_pass):
-        abort(406)
+        abort(403)
 
     data = request.get_json()
     try:
-        if AuthUser.query.filter_by(user = data['userid']).first() is not None:
+        if AuthUser.query.filter_by(user = data['userid']).first() is None:
             abort(406)
         
         user = AuthUser(user = data['userid'])
@@ -26,7 +26,7 @@ def NewUser(admin_pass):
     except KeyError as e:
         abort(400)
 
-@app.route('/')
+@app.route('/',methods=['GET','POST'])
 @auth.login_required
 def All():
     users = Reservations.query.all()
