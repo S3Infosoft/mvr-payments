@@ -1,7 +1,4 @@
 {
-    "Reservation From" : "Google",
-    "Guest Name" : "Sample User",
-    "Guest Email" : "sample.user123@gmail.com",
-    "Guest Contact No." : 9876543210,
-    "Comment" : "Sample user for Checking Apis"
+    "id" : 2,
+    "Reservation From" : "Yahoo"
 }
