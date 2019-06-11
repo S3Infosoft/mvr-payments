@@ -5,7 +5,7 @@ MVR Payments Module
 - docker build -t mvr-payment:latest .
 
 ## To Run
-- docker run -d -p 5000:5000 mvr-payment:latest
+- docker run --rm -p 5000:5000 -d --name s3infosoft mvr-payment:latest
 
 ## Api Test
 api contain a python class 'Query' with initial arguments 'username' and 'password' of registered user for authentication.
