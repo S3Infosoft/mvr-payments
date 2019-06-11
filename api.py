@@ -25,14 +25,14 @@ class Query:
                         return res
         
         def Create(self,Arg):
-                if not os.path.isfile(Arg):
+                if os.path.isfile(Arg):
                         with open(Arg) as f:
                                 data = json.load(f)
                 else:
                         data = json.dump(Arg)
                 res = requests.post(self.URL + '/Create',json=data,auth=(self.user,self.pswd))
                 if res.ok:
-                        return res.json()
+                        return res
                 else:
                         return res
         
@@ -46,7 +46,7 @@ class Query:
 
         def Update(self,Arg):
 
-                if not os.path.isfile(Arg):
+                if os.path.isfile(Arg):
                         with open(Arg) as f:
                                 data = json.load(f)
                 else:
@@ -55,7 +55,7 @@ class Query:
                 print('id : ',data['id'])
                 res = requests.post(self.URL + '/Update/' + str(data['id']),json=data,auth=(self.user,self.pswd))
                 if res.ok:
-                        return res.json()
+                        return res
                 else:
                         return res
 
