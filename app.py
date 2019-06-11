@@ -13,7 +13,7 @@ def NewUser(admin_pass):
 
     data = request.get_json()
     try:
-        if AuthUser.query.filter_by(user = data['userid']).first() is None:
+        if AuthUser.query.filter_by(user = data['userid']).first() is not None:
             abort(406)
         
         user = AuthUser(user = data['userid'])
@@ -122,10 +122,11 @@ def Create():
 @auth.login_required
 def Delete(uid):
     user_to_delete = Reservations.query.filter_by(ID = uid).all()[0]
+    if user_to_delete is None:
+        return 'no data for ID %s to Delete'%uid
     db.session.delete(user_to_delete)
     db.session.commit()
-    flash('data for ID %s Deleted Successfully'%uid)
-    return redirect(url_for('All'))
+    return 'data for ID %s Deleted Successfully'%uid
 
 @app.route('/v1/Update/<uid>',methods=['POST'])
 @auth.login_required
