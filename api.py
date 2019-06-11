@@ -1,5 +1,6 @@
 import requests
 import json
+import os
 
 class Query:
         def __init__(self,user,pswd):
@@ -23,9 +24,12 @@ class Query:
                 else:
                         return res
         
-        def Create(self,Args):
-                with open(Args) as f:
-                        data = json.load(f)
+        def Create(self,Arg):
+                if not os.path.isfile(Arg):
+                        with open(Arg) as f:
+                                data = json.load(f)
+                else:
+                        data = json.dump(Arg)
                 res = requests.post(self.URL + '/Create',json=data,auth=(self.user,self.pswd))
                 if res.ok:
                         return res.json()
@@ -42,8 +46,11 @@ class Query:
 
         def Update(self,Arg):
 
-                with open(Arg) as f:
-                        data = json.load(f)
+                if not os.path.isfile(Arg):
+                        with open(Arg) as f:
+                                data = json.load(f)
+                else:
+                        data = json.dump(Arg)
                 
                 print('id : ',data['id'])
                 res = requests.post(self.URL + '/Update/' + str(data['id']),json=data,auth=(self.user,self.pswd))
