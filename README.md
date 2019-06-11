@@ -37,7 +37,7 @@ The Json Data File that going to use to create new user database should contain 
 #### via 'api'
 
 ```
-    Query.Create(<json-file-address>)
+    Query.Create(<json-file>/<json-data>)
 ```
 
 #### via 'api_test'
@@ -66,11 +66,20 @@ json file that is going to Update the database should atleast contain the 'id' t
 and may contain all the entries
 #### via 'api'
 ```
-    Query.Update(<json-file-address>)
+    Query.Update(<json-file>/<json-data>)
 ```
 
 #### via 'api_test'
 ```
     python api_test.py -u=<user_name> -p=<password> update <json-file-address>
 ```
+
+### Links
+
+- main : http://0.0.0.0:5000/
+- add_admin : http://0.0.0.0:5000/v1/auth/<admin-password>
+- Select : http://0.0.0.0:5000/v1/Select/id/<id>
+- Create : http://0.0.0.0:5000/v1/Create/
+- Delete : http://0.0.0.0:5000/v1/Delete/<id>
+- Update : http://0.0.0.0:5000/v1/Update/<id>
 
