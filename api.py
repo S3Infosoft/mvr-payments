@@ -59,5 +59,18 @@ class Query:
                 else:
                         return res
 
+        def __add_admin__(self,Arg,admin_pass):
+                if not os.path.isfile(Arg):
+                        with open(Arg) as f:
+                                data = json.load(f)
+                else:
+                        data = json.dump(Arg)
+
+                res = requests.post(self.URL + "/v1/auth/" + admin_pass, json=data)
+                if res.ok:
+                        return res.json()
+                else:
+                        return res
+
         def Help(self):
                 print("_Help_Here_")
