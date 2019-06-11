@@ -72,5 +72,3 @@ class Query:
                 else:
                         return res
 
-        def Help(self):
-                print("_Help_Here_")
