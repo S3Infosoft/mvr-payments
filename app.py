@@ -94,26 +94,29 @@ def Select(method,data):
 @auth.login_required
 def Create():
     data = request.get_json()
-    user = Reservations(data['Reservation Date'],
-                        data['Reservation From'],
-                        data['Check in Date'],
-                        data['Check Out Date'],
-                        data['Guest Name'],
-                        data['Guest Email'],
-                        data['Guest Contact No.'],
-                        data['Booking Amount'],
-                        data['Commission Amount'],
-                        data['Commission Tax'],
-                        data['Total Commission'],
-                        data['Amount Recivable'],
-                        data['Comment']
-           )
-    db.session.add(user)
-    db.session.commit()
+    try:
+        user = Reservations(data['Reservation Date'],
+                            data['Reservation From'],
+                            data['Check in Date'],
+                            data['Check Out Date'],
+                            data['Guest Name'],
+                            data['Guest Email'],
+                            data['Guest Contact No.'],
+                            data['Booking Amount'],
+                            data['Commission Amount'],
+                            data['Commission Tax'],
+                            data['Total Commission'],
+                            data['Amount Recivable'],
+                            data['Comment']
+            )
+        db.session.add(user)
+        db.session.commit()
 
-    flash('data added successfully')
-    
-    return redirect(url_for('All'))
+        return 'Data Updated Successfully'
+
+    except KeyError as e:
+        return 'Data Error : one or more entries are missing\nCode : %s'%str(e)
+
 
 @app.route('/v1/Delete/<uid>')
 @auth.login_required
