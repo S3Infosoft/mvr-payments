@@ -1,0 +1,4 @@
+*.pyc 
+store/pending/*
+store/done/*
+
