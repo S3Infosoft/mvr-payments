@@ -1,10 +1,22 @@
-from flask_httpauth import HTTPBasicAuth
-from Model import AuthUser
-auth = HTTPBasicAuth()
+from flask_httpauth import HTTPTokenAuth
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
-@auth.verify_password
-def VerifyPassword(username,password):
-    user = AuthUser.query.filter_by(user = username).first()
-    if not user or not user.verify(password):
+from init import secret_key
+
+token_serializer = Serializer(secret_key,expires_in=3600)
+
+authentication = HTTPTokenAuth('Bearer')
+
+users = ['admin']
+
+@authentication.verify_token
+def verify_token(token=None):
+    try:
+        data = token_serializer.loads(token)
+    except:
         return False
-    return True
+
+    if 'user' in data:
+        return True
+
+    return False
