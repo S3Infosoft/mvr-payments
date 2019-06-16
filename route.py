@@ -1,13 +1,8 @@
 from init import app
-from model import reservation,database
+from model import reservation,database,payments
 from auth import authentication, token_serializer
 import json, requests
-
-@app.route('/v1/token/<user>')
-def get_token(user=None):
-    token = token_serializer.dumps({'user':user}).decode('utf-8')
-    return token
-
+from init import secret_key
 
 @app.route('/')
 @authentication.login_required
