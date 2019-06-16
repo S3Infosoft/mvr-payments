@@ -34,6 +34,21 @@ class reservation(database.Model):
         self.amntrec = data['amntrec']
         self.cmnt = data['cmnt']
 
+    def update(self,data):
+        self.rdate = data['rdate']
+        self.rfrom = data['rfrom']
+        self.ckin  = data['ckin']
+        self.ckout = data['ckout']
+        self.gname = data['gname']
+        self.gcontno = data['gcontno']
+        self.gemail = data['gemail']
+        self.amntbook = data['amntbook']
+        self.amntcom = data['amntcom']
+        self.taxcom = data['taxcom']
+        self.totcom = data['totcom']
+        self.amntrec = data['amntrec']
+        self.cmnt = data['cmnt']
+                
     def get_json(self):
         user = {
             'id' : self.id,
@@ -44,10 +59,10 @@ class reservation(database.Model):
             'gname' : self.gname,
             'gemail' : self.gemail,
             'gcontno' : self.gcontno,
-            'bkamnt' : self.bkamnt,
-            'comamnt' : self.comamnt,
-            'comtax' : self.comtax,
-            'comtot' : self.comtot,
+            'amntbook' : self.amntbook,
+            'amntcom' : self.amntcom,
+            'taxcom' : self.taxcom,
+            'totcom' : self.totcom,
             'amntrec' : self.amntrec,
             'cmnt' : self.cmnt
         }
