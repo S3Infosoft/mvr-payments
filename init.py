@@ -1,7 +1,7 @@
 from flask import Flask
 import os
 
-secret_key = os.urandom(12).hex()
+secret_key = 'b56bcfe6e990f28915f5a7c3'
 
 app = Flask(__name__)
 app.secret_key = secret_key
