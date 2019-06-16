@@ -53,4 +53,35 @@ class reservation(database.Model):
         }
         return user
 
+class payments(database.Model):
+    payamnt = database.Column('payamnt',database.Integer)
+    paymeth = database.Column('paymeth',database.String)
+    txnid   = database.Column('txnid',database.String)
+    resid   = database.Column('resid',database.Integer,primary_key=True)
+    datetime = database.Column('datetime',database.String)
+    creator  = database.Column('creator',database.String)
+    cmnt = database.Column('cmnt',database.String)
+
+    def __init__(self,data):
+        self.payamnt = data['payamnt']
+        self.paymeth = data['paymeth']
+        self.txnid   = data['txnid']
+        self.resid   = data['resid']
+        self.datetime = data['datetime']
+        self.creator = data['creator']
+        self.cmnt = data['cmnt']
+
+    def get_json(self):
+        data = {
+            'payamnt' : self.payamnt,
+            'paymeth' : self.paymeth,
+            'txnid'   : self.txnid,
+            'resid'   : self.resid,
+            'datetime': self.datetime,
+            'creator' : self.creator,
+            'cmnt'    : self.cmnt
+        }
+
+        return data
+    
 database.create_all()
