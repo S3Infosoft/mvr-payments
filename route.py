@@ -1,8 +1,9 @@
 from init import app
 from model import reservation,database,payments
 from auth import authentication, token_serializer
-import json, requests
+import json
 from init import secret_key
+from flask import request
 
 @app.route('/')
 @authentication.login_required
@@ -10,7 +11,7 @@ def index():
     users = reservation.query.all()
     alluser = []
     for usr in users:
-        alluser.append(user = usr.get_json())
+        alluser.append(usr.get_json())
     return json.dumps(alluser)
 
 
@@ -26,31 +27,32 @@ def select(id):
 @app.route('/v1/create/', methods = ['POST'])
 @authentication.login_required
 def create():
-    data = requests.get_json()
+    data = request.get_json()
     user = reservation(data)
     database.session.add(user)
     database.session.commit()
-    return 'Data Updated Successfully'
+    return str('Data Updated Successfully')
 
 @app.route('/v1/delete/<id>')
 @authentication.login_required
 def delete(id):
     usr_to_delete = reservation.query.filter_by(id = id).first()
-    if usr_to_delete is None:
-        return 'no data for id : %s' % id
-    
-    database.session.delete(usr_to_delete)
-    database.session.commit()
+    if usr_to_delete == None:
+        return 'no data for id %s' % id
+    else:
+        database.session.delete(usr_to_delete)
+        database.session.commit()
 
-    return 'data for id %s deleted successfully' % id
+        return 'data for id %s deleted successfully' % id
 
 @app.route('/v1/update/<id>',methods=['POST'])
 @authentication.login_required
 def update(id):
-    data = requests.get_json()
-    usr_to_update = reservation.query.filter_by(id = id).first()
-    usr_to_update(data)
-
+    data = request.get_json()
+    usr = reservation.query.filter_by(id = id).first()
+    if usr == None:
+        return 'not existing user for id : %s' % id
+    usr.update(data)
     database.session.commit()
 
     return 'data update successfully'
