@@ -7,8 +7,6 @@ token_serializer = Serializer(secret_key,expires_in=3600)
 
 authentication = HTTPTokenAuth('Bearer')
 
-users = ['admin']
-
 @authentication.verify_token
 def verify_token(token=None):
     try:
@@ -20,3 +18,8 @@ def verify_token(token=None):
         return True
 
     return False
+
+
+def get_token(user=None):
+    token = token_serializer.dumps({'user':user}).decode('utf-8')
+    return token
