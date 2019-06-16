@@ -3,7 +3,9 @@ from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
 from init import secret_key
 
-token_serializer = Serializer(secret_key,expires_in=3600)
+__token_time__ = 3600
+
+token_serializer = Serializer(secret_key,expires_in=__token_time__)
 
 authentication = HTTPTokenAuth('Bearer')
 
