@@ -1,0 +1,15 @@
+{
+    "rdate" : "25/05/2019",
+    "rfrom" : "mmt",
+    "ckin" : "26/05/2019",
+    "ckout" : "27/05/2019",
+    "gname" : "test user",
+    "gemail" : "anotherid@gmail.com",
+    "gcontno" : 9876543210,
+    "amntbook" : 650,
+    "amntcom" : 2541,
+    "taxcom" : 200,
+    "totcom" : 500,
+    "amntrec" : 3520,
+    "cmnt" : "sample user 2 for testing"
+}
