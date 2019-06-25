@@ -9,6 +9,7 @@ MVR Payments Module
 
 ## Token based authentication
 to get token which is valid for 1hr
+
 ``` docker exec -it s3infosoft python gettoken.py ```
 
 ## Api Test

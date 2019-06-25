@@ -1,9 +1,9 @@
-from init import app
-from model import reservation,database,payments
-from auth import authentication, token_serializer
 import json
-from init import secret_key
 from flask import request
+from api.init import app
+from api.config import __secret_key__
+from api.model import database, reservation, payments
+from api.auth import authentication, token_serializer
 
 @app.route('/')
 @authentication.login_required
