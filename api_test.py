@@ -9,11 +9,9 @@ __url__ = 'http://0.0.0.0:5000/'
 __version__ = 'v1'
 
 queries = ['select','create','delete','update']
-mod = ['reservation','payment']
 
 class api:
-    def __init__(self,token,mod):
-        self.mod = mod
+    def __init__(self,token):
         self.head = {'Authorization': 'Bearer ' + token}
 
     def get(self,url):
@@ -26,9 +24,9 @@ class api:
 
     def select(self,id):
         if id == 'all':
-            url = __url__ + __version__ + '/' + self.mod
+            url = __url__ + '/'
         else:
-            url = __url__ + __version__ + '/' + self.mod + '/select/' + str(id)
+            url = __url__ + __version__ + '/select/' + str(id)
         return self.get(url)
 
     def create(self,js):
@@ -38,16 +36,16 @@ class api:
         else:
             data = js
 
-        url = __url__ + __version__ + '/' + self.mod + '/create/'
+        url = __url__ + __version__ + '/create/'
         print(url)
         return self.post(url,data)
 
     def delete(self,id):
-        url = __url__ + __version__ + '/' + self.mod + '/delete/' + id
+        url = __url__ + __version__ + '/delete/' + id
         return self.get(url)
 
     def update(self,id_json):
-        url = __url__ + __version__ + '/' + self.mod + '/update/' + id_json[0]
+        url = __url__ + __version__ + '/update/' + id_json[0]
 
         if os.path.isfile(id_json[1]):
             with open(id_json[1],'r') as js_data:
@@ -60,16 +58,13 @@ class api:
 
 
 if __name__ == '__main__':
-    if sys.argv[1] in mod:
-        sel_mod = sys.argv[1]
+    if sys.argv[1] in queries:
+        query = sys.argv[1]
 
-    if sys.argv[2] in queries:
-        query = sys.argv[2]
-
-    arg = sys.argv[3:]
+    arg = sys.argv[2:]
 
     token = get_token('admin')
-    a = api(token,sel_mod)
+    a = api(token)
 
     if query == 'select':
         print(a.select(arg[0]))
