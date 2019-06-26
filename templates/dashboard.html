@@ -18,26 +18,19 @@
         <div class="ChoiceEntry">
             <button class="ChoiceButton">Reservation</button>
             <div class="ChoiceContent">
-                <a href="#">
-                    <form class="Choices" action="/v1/guest/show" method="POST">
-                        <input type="email" placeholder="Enter Email Address">
-                        <input type="submit" value="Show">
-                    </form>
-                </a>
-                <a href="#">
-                    <form class="Choices" method="POST">
-                        <input type="email" placeholder="Enter Email Address">
-                        <input type="submit" value="Edit">
-                    </form>
-                </a>
-                <a href="#">
-                    <form class="Choices" action="/v1/guest/new" method="POST">
-                        <input style="width: 100%" type="submit" value="New">
-                    </form>
-                </a>
+                <a href="/v1/guest/show">Show</a>
+                <a href="#">Edit</a>
+                <a href="/v1/guest/new">New</a>
             </div>
         </div>
 
+    </div>
+
+    <div class="View">
+        <div class="Data">
+            {% block content %}
+            {% endblock %}
+        </div>
     </div>
 </body>
 </html>
