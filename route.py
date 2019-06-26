@@ -1,9 +1,65 @@
 from init import app
-from model import reservation,database,payments
+from model import reservation,database,payments, User
 from auth import authentication, token_serializer
+
+
+from flask import request, abort, redirect, Response, url_for, render_template
+from flask_login import LoginManager, login_required, login_user, logout_user, current_user
 import json
-from init import secret_key
-from flask import request
+
+login_manager = LoginManager()
+login_manager.login_view = 'login'
+login_manager.init_app(app)
+
+
+@login_manager.user_loader
+def load_user(userid):
+    return User.query.get(userid)
+
+@app.route('/dashboard')
+@login_required
+def dashboard():
+    return render_template('dashboard.html',User = current_user.email)
+
+
+@app.route('/login',methods=['GET','POST'])
+def login():
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+
+        reg_usr = User.query.get(email)
+        if reg_usr != None and reg_usr.verify(password):
+            print('logged in..')
+            login_user(reg_usr)
+            return redirect(url_for('dashboard'))
+        else:
+            err = 'Email and password didnt matched'
+            return render_template('signup.html',err = err)
+    else:
+        return render_template('login.html')
+
+@app.route('/signup' , methods = ['GET' , 'POST'])
+def signup():
+    err = None
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+        new_user = User.query.get(email)
+
+        if new_user == None:
+            new_user = User(email,password)
+        else:
+            err = 'User already present with this email'
+            return render_template('signup.html',err = err)
+        
+        database.session.add(new_user)
+        database.session.commit()
+        login_user(new_user)
+
+        return redirect(url_for('dashboard'))
+    else:
+        return render_template('signup.html')
 
 @app.route('/')
 @authentication.login_required
