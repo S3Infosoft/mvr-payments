@@ -2,9 +2,9 @@ from flask import request, abort, redirect, Response, url_for, render_template
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
 import json
 
-
+from config import __version__
 from app.init import app
-from app.model import reservation, database, payments, User
+from app.model import reservation, database, payments, User, guest
 from app.auth import authentication
 
 
@@ -72,6 +72,30 @@ def index():
         alluser.append(usr.get_json())
     return json.dumps(alluser)
 
+
+@app.route('/%s/guest/new' % __version__, methods=['POST','GET'])
+@login_required
+def GuestNew():
+    if request.method == 'POST':
+        if request.form :
+            if guest.query.filter_by(email = request.form['email']).first() is None:
+                new_guest = guest(request.form)
+                database.session.add(new_guest)
+                database.session.commit()
+
+                return render_template('dashboard.html',msg='User %s Registered' % new_guest.name)
+            else:
+                err = 'Email is already Registered'
+                return render_template('guest_create.html', err = err)
+        else:
+            render_template('guest_create.html')
+
+    return render_template('guest_create.html')
+
+@app.route('/%s/guest/show' % __version__,methods=['POST'])
+@login_required
+def GuestShow():
+    print("====> Form : ",request.form)
 
 @app.route('/v1/select/<id>')
 @authentication.login_required
