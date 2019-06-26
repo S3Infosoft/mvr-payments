@@ -21,7 +21,3 @@ def verify_token(token=None):
 
     return False
 
-
-def get_token(user=None):
-    token = token_serializer.dumps({'user':user}).decode('utf-8')
-    return token
