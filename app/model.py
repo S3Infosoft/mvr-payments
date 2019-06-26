@@ -1,7 +1,8 @@
-from init import app, secret_key
 from flask_sqlalchemy import SQLAlchemy
 import hashlib
-from auth import token_serializer
+
+from app.init import app
+from app.auth import token_serializer
 
 database = SQLAlchemy(app)
 

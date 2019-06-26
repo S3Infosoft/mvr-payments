@@ -1,11 +1,13 @@
-from init import app
-from model import reservation,database,payments, User
-from auth import authentication, token_serializer
-
-
 from flask import request, abort, redirect, Response, url_for, render_template
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
 import json
+
+
+from app.init import app
+from app.model import reservation, database, payments, User
+from app.auth import authentication
+
+
 
 login_manager = LoginManager()
 login_manager.login_view = 'login'
