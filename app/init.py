@@ -3,6 +3,6 @@ import os
 
 from config import __secret_key__ 
 
-app = Flask(__name__, template_folder='../templates')
+app = Flask(__name__, template_folder='../templates', static_folder='../static')
 app.secret_key = __secret_key__
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///../database/database.db'
