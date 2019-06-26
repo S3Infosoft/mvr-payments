@@ -18,7 +18,7 @@ login_manager.init_app(app)
 def load_user(userid):
     return User.query.get(userid)
 
-@app.route('/dashboard')
+@app.route('/dashboard', methods=['POST','GET'])
 @login_required
 def dashboard():
     return render_template('dashboard.html',User = current_user.email)
@@ -37,7 +37,7 @@ def login():
             return redirect(url_for('dashboard'))
         else:
             err = 'Email and password didnt matched'
-            return render_template('signup.html',err = err)
+            return render_template('login.html',err = err)
     else:
         return render_template('login.html')
 
@@ -64,7 +64,7 @@ def signup():
         return render_template('signup.html')
 
 @app.route('/')
-@authentication.login_required
+@login_required
 def index():
     users = reservation.query.all()
     alluser = []
@@ -83,7 +83,9 @@ def GuestNew():
                 database.session.add(new_guest)
                 database.session.commit()
 
-                return render_template('dashboard.html',msg='User %s Registered' % new_guest.name)
+                return render_template('dashboard.html',msg='User %s Registered' % new_guest.name,
+                                       GuestView= True,
+                                       data=new_guest)
             else:
                 err = 'Email is already Registered'
                 return render_template('guest_create.html', err = err)
@@ -92,10 +94,21 @@ def GuestNew():
 
     return render_template('guest_create.html')
 
-@app.route('/%s/guest/show' % __version__,methods=['POST'])
+@app.route('/%s/guest/show' % __version__, methods=['POST','GET'])
 @login_required
 def GuestShow():
-    print("====> Form : ",request.form)
+    data = None
+    if request.method == 'POST':
+        if request.form:
+            email = request.form['email']
+            g = guest.query.get(email)
+            print(g.phoneno)
+            if g:
+                return render_template('guest_show.html',data=g)
+
+            else:
+                return render_template('guest_show.html',data=None , err = 'No any Guest with this Email')
+    return render_template('guest_show.html',data=data)
 
 @app.route('/v1/select/<id>')
 @authentication.login_required
