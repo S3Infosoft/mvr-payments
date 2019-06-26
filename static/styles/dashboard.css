@@ -1,0 +1,27 @@
+.ChoiceEntry {
+    position: relative;
+    display: inline-block;
+}
+
+.ChoiceButton {
+
+}
+
+.ChoiceContent {
+    display: none;
+    position: absolute;
+    background-color: #d3cfcf;
+    min-width: 200px;
+    border: 5px;
+}
+
+.ChoiceContent a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.ChoiceEntry:hover .ChoiceContent {
+    display: block;
+}
