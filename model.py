@@ -1,5 +1,7 @@
-from init import app
+from init import app, secret_key
 from flask_sqlalchemy import SQLAlchemy
+import hashlib
+from auth import token_serializer
 
 database = SQLAlchemy(app)
 
@@ -98,5 +100,40 @@ class payments(database.Model):
         }
 
         return data
+
+
+class User(database.Model):
+    email = database.Column(database.String,primary_key= True)
+    password = database.Column(database.String)
+    auth = database.Column(database.Boolean, default=True)
+
+    def __init__(self,email,password):
+        self.email = email
+        self.password = self.__encrypt__(password)
+
+    def get_auth_token(self):
+        token = token_serializer.dumps({'email':self.email,
+                                        'password':self.password}).decode('utf-8')
+        return token
+
+    def __encrypt__(self,password):
+        h = hashlib.md5(password.encode())
+        return h.hexdigest()
+
+    def verify(self,password):
+        return self.password == self.__encrypt__(password)
     
+    def is_active(self):
+        return True
+
+    def is_authenticated(self):
+        return True
+
+    def get_id(self):
+        return self.email
+
+    def is_anomymous(self):
+        return False
+
+
 database.create_all()
