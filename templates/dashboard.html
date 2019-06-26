@@ -1,10 +1,43 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Dashboard</title>
-    </head>
+<head>
+    <link rel="stylesheet" href="{{ url_for('static',filename='styles/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static',filename='styles/dashboard.css') }}">
+    <title>Dashboard</title>
+</head>
 
-    <body>
-        <h2>Welcome {{ User }}</h2>
-    </body>
+<body>
+    <h2>Welcome {{ User }}</h2>
+    
+    {% if msg %}
+        <p class="Message">Message : {{ msg }}</p>
+    {% endif %}
+
+    <div class="Container">
+
+        <div class="ChoiceEntry">
+            <button class="ChoiceButton">Reservation</button>
+            <div class="ChoiceContent">
+                <a href="#">
+                    <form class="Choices" action="/v1/guest/show" method="POST">
+                        <input type="email" placeholder="Enter Email Address">
+                        <input type="submit" value="Show">
+                    </form>
+                </a>
+                <a href="#">
+                    <form class="Choices" method="POST">
+                        <input type="email" placeholder="Enter Email Address">
+                        <input type="submit" value="Edit">
+                    </form>
+                </a>
+                <a href="#">
+                    <form class="Choices" action="/v1/guest/new" method="POST">
+                        <input style="width: 100%" type="submit" value="New">
+                    </form>
+                </a>
+            </div>
+        </div>
+
+    </div>
+</body>
 </html>
