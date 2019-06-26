@@ -6,15 +6,40 @@ from app.auth import token_serializer
 
 database = SQLAlchemy(app)
 
+class guest(database.Model):
+    __tablename__ = 'guest'
+    email = database.Column('email',database.String,primary_key = True)
+    name = database.Column('name',database.String)
+    phone = database.Column('phoneno',database.Integer)
+    photoid = database.Column('photoid',database.String)
+
+    def __init__(self,data):
+        self.email = data['email']
+        self.name = data['name']
+        self.phone = data['phoneno']
+        self.photoid = data['photoid']
+
+    def update(self,data):
+        self.email = data['email']
+        self.name = data['name']
+        self.phone = data['phoneno']
+        self.photoid = data['photoid']
+
+    def get_json(self):
+        return {
+            'email':self.email,
+            'name':self.name,
+            'phoneno':self.phone,
+            'photoid':self.photoid
+        }
+
 class reservation(database.Model):
     id      = database.Column('id',database.Integer,primary_key = True)
+    guest_id = database.Column('guestid',database.String,database.ForeignKey(''))
     rdate   = database.Column('rdate',database.String)
     rfrom   = database.Column('rfrom',database.String)
     ckin    = database.Column('ckin',database.String)
     ckout   = database.Column('ckout',database.String)
-    gname   = database.Column('gname',database.String)
-    gemail  = database.Column('gemail',database.String)
-    gcontno = database.Column('gcontno',database.Integer)
     amntbook= database.Column('amntbook',database.Integer)
     amntcom = database.Column('amntcom',database.Integer)
     taxcom  = database.Column('taxcom',database.Integer)
