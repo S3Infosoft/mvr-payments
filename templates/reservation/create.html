@@ -1,0 +1,15 @@
+{% extends 'dashboard.html' %}
+{% block content %}
+        <form action="" method="POST">
+            <p>Email    :    <input type="email" name="email" placeholder="Enter Your email" required></p>
+            <p>Name     :    <input type="text" name="name" placeholder="Enter Your name" required></p>
+            <p>Phone No :    <input type="number" name="phoneno" placeholder="Enter Your Phone No" required></p>
+            <p>Photo ID :    <input type="text" name="photoid" placeholder="Enter Your Photo id" required></p>
+            <p>Check in Date : <input type="number" name="checkin" </p>
+            {% if err %}
+            <p>Error : {{ err }}</p>
+            {% endif %}
+            <p><input type="submit" value="Register"></p>
+
+        </form>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends 'dashboard.html' %}
+{% block content %}
+
+<p>
+<form method='POST' action="">
+    Email : <input type="email" name="email"><input type="submit" value="Search">
+</form>
+</p>
+{% if err %}
+<p class="Error">Error : {{ err }}</p>
+{% endif %}
+
+{% if data %}
+            <p>Email    :    {{ data.email }}</p>
+            <p>Name     :    {{ data.name }}</p>
+            <p>Phone No :    {{ data.phoneno }}</p>
+            <p>Photo ID :    {{ data.photoid }}</p>
+            <a href="/v1/guest/edit/{{ data.email }}">Edit</a>
+{% endif %}
+{% endblock %}
