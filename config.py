@@ -1,5 +1,13 @@
 import os
 
-__version__ = 'v1'
-__secret_key__ = os.urandom(36)
-__token_time__ = 5 * 60
+VERSION = 'v1'
+SECRET_KEY = os.urandom(36)
+TOKEN_TIME = 5 * 60
+
+
+__roots__ = '../'
+
+TEMPLATES = __roots__ + 'templates'
+STATIC = __roots__ + 'static'
+
+DATATBASE = __roots__ + 'database/database.db'

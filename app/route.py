@@ -2,7 +2,7 @@ from flask import request, abort, redirect, Response, url_for, render_template
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
 import json
 
-from config import __version__
+import config
 from app.init import app
 from app.model import reservation, database, payments, User, guest
 from app.auth import authentication
@@ -73,7 +73,7 @@ def index():
     return json.dumps(alluser)
 
 
-@app.route('/%s/guest/new' % __version__, methods=['POST','GET'])
+@app.route('/%s/guest/new' % config.VERSION, methods=['POST','GET'])
 @login_required
 def GuestNew():
     if request.method == 'POST':
@@ -94,7 +94,7 @@ def GuestNew():
 
     return render_template('guest_create.html')
 
-@app.route('/%s/guest/show' % __version__, methods=['POST','GET'])
+@app.route('/%s/guest/show' % config.VERSION, methods=['POST','GET'])
 @login_required
 def GuestShow():
     data = None
