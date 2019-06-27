@@ -102,7 +102,6 @@ def GuestShow():
         if request.form:
             email = request.form['email']
             g = guest.query.get(email)
-            print(g.phoneno)
             if g:
                 return render_template('guest_show.html',data=g)
 

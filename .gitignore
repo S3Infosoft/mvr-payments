@@ -2,3 +2,4 @@
 store/pending/*
 store/done/*
 
+database/database.db
