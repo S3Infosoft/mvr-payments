@@ -72,6 +72,9 @@ def index():
         alluser.append(usr.get_json())
     return json.dumps(alluser)
 
+# -----------------------------------------------------------------------------------------
+#                                   Guest
+# -----------------------------------------------------------------------------------------
 
 @app.route('/%s/guest/new' % config.VERSION, methods=['POST','GET'])
 @login_required
@@ -88,11 +91,11 @@ def GuestNew():
                                        data=new_guest)
             else:
                 err = 'Email is already Registered'
-                return render_template('guest_create.html', err = err)
+                return render_template('guest/create.html', err = err)
         else:
-            render_template('guest_create.html')
+            render_template('guest/create.html')
 
-    return render_template('guest_create.html')
+    return render_template('guest/create.html')
 
 @app.route('/%s/guest/show' % config.VERSION, methods=['POST','GET'])
 @login_required
@@ -103,11 +106,51 @@ def GuestShow():
             email = request.form['email']
             g = guest.query.get(email)
             if g:
-                return render_template('guest_show.html',data=g)
+                return render_template('guest/show.html',data=g)
 
             else:
-                return render_template('guest_show.html',data=None , err = 'No any Guest with this Email')
-    return render_template('guest_show.html',data=data)
+                return render_template('guest/show.html',data=None , err = 'No any Guest with this Email')
+    return render_template('guest/show.html',data=data)
+
+@app.route('/%s/guest/edit/<email>' % config.VERSION, methods=['POST','GET'] )
+@login_required
+def GuestEdit(email):
+    data = guest.query.get(email)
+    if request.method == 'POST':
+        if request.form:
+            updated_data = request.form
+            data.update(updated_data)
+            database.session.commit()
+            return render_template('guest/show.html',data=data,msg = "Data updated Successfully")
+        else:
+            return render_template('guest/edit.html',data=data)
+    return render_template('guest/edit.html',data=data)
+
+
+# -----------------------------------------------------------------------------------------
+#                                   Reservation
+# -----------------------------------------------------------------------------------------
+
+@app.route('/%s/reservation/new' % config.VERSION, methods=['POST','GET'])
+@login_required
+def ResNew():
+    if request.method == 'POST':
+        
+
+@app.route('/%s/reservation/show' % config.VERSION, methods=['POST','GET'])
+@login_required
+def GuestShow():
+    data = None
+    if request.method == 'POST':
+        
+
+@app.route('/%s/reservation/edit/<email>' % config.VERSION, methods=['POST','GET'] )
+@login_required
+def GuestEdit(email):
+    data = reservation.query.get(email)
+    if request.method == 'POST':
+        
+
 
 @app.route('/v1/select/<id>')
 @authentication.login_required
