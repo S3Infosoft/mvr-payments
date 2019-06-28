@@ -16,5 +16,10 @@
             <p>Phone No :    {{ data.phoneno }}</p>
             <p>Photo ID :    {{ data.photoid }}</p>
             <a href="/v1/guest/edit/{{ data.email }}">Edit</a>
+            <a href="/v1/reservation/new/{{ data.email }}">New Reservation</a>
+
+            {% if reservation_data %}
+
+            {% endif %}
 {% endif %}
 {% endblock %}
