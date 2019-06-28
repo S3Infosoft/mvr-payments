@@ -1,0 +1,15 @@
+{% extends 'dashboard.html' %}
+{% block content %}
+
+        <form action="" method="POST">
+            <p>Email    :    <input type="email" name="email" value="{{ data.email }}" required readonly></p>
+            <p>Name     :    <input type="text" name="name"value="{{ data.name }}" required></p>
+            <p>Phone No :    <input type="number" name="phoneno" value="{{ data.phoneno }}" required></p>
+            <p>Photo ID :    <input type="text" name="photoid" value="{{ data.photoid }}" required></p>
+            {% if err %}
+            <p>Error : {{ err }}</p>
+            {% endif %}
+            <p><input type="submit" value="Update"></p>
+
+        </form>
+{% endblock %}

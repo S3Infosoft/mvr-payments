@@ -1,9 +1,11 @@
 from flask import Flask
 import os
 
-from config import __secret_key__ 
+import config
 
-app = Flask(__name__, template_folder='../templates', static_folder='../static')
-app.secret_key = __secret_key__
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///../database/database.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+app = Flask(__name__, 
+            template_folder = config.TEMPLATES,
+            static_folder   = config.STATIC)
+    
+app.secret_key = config.SECRET_KEY
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///%s' % config.DATATBASE

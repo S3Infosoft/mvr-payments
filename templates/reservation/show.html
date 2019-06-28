@@ -1,0 +1,35 @@
+{% extends 'dashboard.html' %}
+{% block content %}
+
+<p>
+<form method='POST' action="">
+    Email : <input type="email" name="email"><input type="submit" value="Search">
+</form>
+</p>
+{% if err %}
+<p class="Error">Error : {{ err }}</p>
+{% endif %}
+
+{% if data %}
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Check In Date</th>
+        <th>Check Out Date</th>
+        <th>Reservation Date</th>
+        <th>Reservation From</th>
+        <th>Comment</th>
+    </tr>
+    {% for res in data[::-1] %}
+        <tr>
+            <td>{{ res.id }}</td>
+            <td>{{ res.ckin }}</td>
+            <td>{{ res.ckout }}</td>
+            <td>{{ res.rdate }}</td>
+            <td>{{ res.rfrom }}</td>
+            <td>{{ res.cmnt }}</td>
+        </tr>
+    {% endfor %}
+</table>
+{% endif %}
+{% endblock %}

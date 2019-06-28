@@ -1,9 +1,11 @@
 from flask_httpauth import HTTPTokenAuth
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
-from config import __secret_key__, __token_time__
+import config
 
-token_serializer = Serializer(__secret_key__,expires_in=__token_time__)
+token_serializer = Serializer( config.SECRET_KEY ,
+                               expires_in= config.TOKEN_TIME)
+                               
 authentication = HTTPTokenAuth('Bearer')
 
 @authentication.verify_token

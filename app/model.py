@@ -12,6 +12,7 @@ class guest(database.Model):
     name = database.Column('name',database.String)
     phoneno = database.Column('phoneno',database.Integer)
     photoid = database.Column('photoid',database.String)
+    reservation = database.relationship("reservation",backref='guest',lazy='dynamic')
 
     def __init__(self,data):
         self.email = data['email']
@@ -33,33 +34,36 @@ class guest(database.Model):
             'photoid':self.photoid
         }
 
+    def __repr__(self):
+        return '<Guest %s>' % self.email
+
+class room(database.Model):
+    __tablename__ = 'room'
+    id     = database.Column('id',database.Integer,primary_key = True)
+    res_id = database.Column(database.Integer,database.ForeignKey('reservation.id'))
+    type   = database.Column('type',database.String)
+
+    def __init__(self,data):
+        self.type = data['type']
+
 class reservation(database.Model):
+    __tablename__ = 'reservation'
     id      = database.Column('id',database.Integer,primary_key = True)
-    #guest_id = database.Column('guestid',database.String,database.ForeignKey(''))
-    rdate   = database.Column('rdate',database.String)
-    rfrom   = database.Column('rfrom',database.String)
     ckin    = database.Column('ckin',database.String)
     ckout   = database.Column('ckout',database.String)
-    amntbook= database.Column('amntbook',database.Integer)
-    amntcom = database.Column('amntcom',database.Integer)
-    taxcom  = database.Column('taxcom',database.Integer)
-    totcom  = database.Column('totcom',database.Integer)
-    amntrec = database.Column('amntrec',database.Integer)
-    cmnt =    database.Column('cmnt',database.String)
+    rdate   = database.Column('rdate',database.String)
+    rfrom   = database.Column('rfrom',database.String)
+    cmnt    = database.Column('cmnt',database.String)
+    
+    txn     = database.relationship('payment',backref='reservation',lazy='dynamic')
+    guest_id = database.Column(database.String,database.ForeignKey('guest.email'))
+    room = database.relationship('room',backref='reservation',lazy='dynamic')
 
     def __init__(self,data):
         self.rdate = data['rdate']
         self.rfrom = data['rfrom']
         self.ckin  = data['ckin']
         self.ckout = data['ckout']
-        self.gname = data['gname']
-        self.gcontno = data['gcontno']
-        self.gemail = data['gemail']
-        self.amntbook = data['amntbook']
-        self.amntcom = data['amntcom']
-        self.taxcom = data['taxcom']
-        self.totcom = data['totcom']
-        self.amntrec = data['amntrec']
         self.cmnt = data['cmnt']
 
     def update(self,data):
@@ -67,14 +71,6 @@ class reservation(database.Model):
         self.rfrom = data['rfrom']
         self.ckin  = data['ckin']
         self.ckout = data['ckout']
-        self.gname = data['gname']
-        self.gcontno = data['gcontno']
-        self.gemail = data['gemail']
-        self.amntbook = data['amntbook']
-        self.amntcom = data['amntcom']
-        self.taxcom = data['taxcom']
-        self.totcom = data['totcom']
-        self.amntrec = data['amntrec']
         self.cmnt = data['cmnt']
                 
     def get_json(self):
@@ -84,44 +80,37 @@ class reservation(database.Model):
             'rfrom' : self.rfrom,
             'ckin' : self.ckin,
             'ckout' : self.ckout,
-            'gname' : self.gname,
-            'gemail' : self.gemail,
-            'gcontno' : self.gcontno,
-            'amntbook' : self.amntbook,
-            'amntcom' : self.amntcom,
-            'taxcom' : self.taxcom,
-            'totcom' : self.totcom,
-            'amntrec' : self.amntrec,
             'cmnt' : self.cmnt
         }
         return user
 
-class payments(database.Model):
-    payamnt = database.Column('payamnt',database.Integer)
-    paymeth = database.Column('paymeth',database.String)
-    txnid   = database.Column('txnid',database.String)
-    resid   = database.Column('resid',database.Integer,primary_key=True)
+class payment(database.Model):
+    __tablename__ = 'payment'
+    id       = database.Column('id',database.Integer,primary_key=True)
+    txntype  = database.Column('txntype',database.String)
     datetime = database.Column('datetime',database.String)
-    creator  = database.Column('creator',database.String)
+    payamnt  = database.Column('payamnt',database.Integer)
+    paymode  = database.Column('paymode',database.String)
+    txnid    = database.Column('txnid',database.String)
     cmnt = database.Column('cmnt',database.String)
+
+    rese_id = database.Column(database.String,database.ForeignKey('reservation.id'))
 
     def __init__(self,data):
         self.payamnt = data['payamnt']
-        self.paymeth = data['paymeth']
+        self.txntype = data['txntype']
+        self.paymode = data['paymode']
         self.txnid   = data['txnid']
-        self.resid   = data['resid']
         self.datetime = data['datetime']
-        self.creator = data['creator']
         self.cmnt = data['cmnt']
 
     def get_json(self):
         data = {
             'payamnt' : self.payamnt,
-            'paymeth' : self.paymeth,
+            'txntype' : self.txntype,
+            'paymode' : self.paymode,
             'txnid'   : self.txnid,
-            'resid'   : self.resid,
             'datetime': self.datetime,
-            'creator' : self.creator,
             'cmnt'    : self.cmnt
         }
 
