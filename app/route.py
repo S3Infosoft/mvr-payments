@@ -4,7 +4,7 @@ import json
 
 import config
 from app.init import app
-from app.model import reservation, database, payments, User, guest
+from app.model import reservation, database, payment, User, guest
 from app.auth import authentication
 
 
@@ -130,27 +130,43 @@ def GuestEdit(email):
 # -----------------------------------------------------------------------------------------
 #                                   Reservation
 # -----------------------------------------------------------------------------------------
-
-@app.route('/%s/reservation/new' % config.VERSION, methods=['POST','GET'])
+@app.route('/%s/reservation/new/<email>' % config.VERSION, methods=['POST','GET'])
 @login_required
-def ResNew():
+def ResNew(email):
+    sel_guest = guest.query.get(email)
     if request.method == 'POST':
+        if request.form:
+            new_res = reservation(request.form)
+            sel_guest.reservation.append(new_res)
+            database.session.add(new_res)
+            database.session.commit()
+            return render_template('dashboard.html',msg='New Reservation Added')
+        else:
+            return render_template('reservation/create.html',data=sel_guest)
+
+    return render_template('reservation/create.html',data=sel_guest)
+            
         
 
 @app.route('/%s/reservation/show' % config.VERSION, methods=['POST','GET'])
 @login_required
-def GuestShow():
+def ReservationShow():
     data = None
     if request.method == 'POST':
-        
+        if request.form:
+            email = request.form['email']
+            g = guest.query.get(email)
+            return render_template('reservation/show.html',data=g.reservation)
+    return render_template('reservation/show.html',data=data)
 
+'''
 @app.route('/%s/reservation/edit/<email>' % config.VERSION, methods=['POST','GET'] )
 @login_required
 def GuestEdit(email):
     data = reservation.query.get(email)
     if request.method == 'POST':
         
-
+'''
 
 @app.route('/v1/select/<id>')
 @authentication.login_required
