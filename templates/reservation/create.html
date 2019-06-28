@@ -1,15 +1,57 @@
 {% extends 'dashboard.html' %}
 {% block content %}
+        <p>Email    :    <input type="email" name="email" value="{{ data.email }}" required readonly></p>
+        <p>Name     :    <input type="text" name="name" value="{{ data.name }}" required readonly></p>
+        <p>Phone No :    <input type="number" name="phoneno" value="{{ data.phoneno }}" required readonly></p>
+
         <form action="" method="POST">
-            <p>Email    :    <input type="email" name="email" placeholder="Enter Your email" required></p>
-            <p>Name     :    <input type="text" name="name" placeholder="Enter Your name" required></p>
-            <p>Phone No :    <input type="number" name="phoneno" placeholder="Enter Your Phone No" required></p>
-            <p>Photo ID :    <input type="text" name="photoid" placeholder="Enter Your Photo id" required></p>
-            <p>Check in Date : <input type="number" name="checkin" </p>
+            <p>Check in Date : <input type="date" name="ckin" </p>
+            <p>Check out Date : <input type="date" name="ckout" </p>
+            <p>Reservation Date : <input type="date" name="rdate" </p>
+            <p>Room 1 : <input type="text" list="rooms" name="room1"></p>
+            <div id="Container"></div>
+            <p><input type="button" value="Add New Room" onclick="addRoom()"></p>
+            <datalist id="rooms">
+                <option value="standard">Standard</option>
+                <option value="superior">Superior</option>
+                <option value="bungalow">Bungalow</option>
+            </datalist>
+            <p>Reservation From : <input type="text" list="partners" name="rfrom">
+                                <datalist id="partners">
+                                    <option value="yatra">Yatra</option>
+                                    <option value="agent">Agent</option>
+                                    <option value="mmt">MMT</option>
+                                    <option value="goibibo">Goibibo</option>
+                                    <option value="booking">Booking</option>
+                                    <option value="tg">TG</option>
+                                    <option value="airnb">Airbnb</option>
+                                    <option value="corporate">Corporate</option>
+                                </datalist>
+            <p>Note : <input type="text" name="cmnt" placeholder="Add Comment"></p>
             {% if err %}
             <p>Error : {{ err }}</p>
             {% endif %}
             <p><input type="submit" value="Register"></p>
 
         </form>
+
+        <script>
+            var room = 1;
+            function addRoom() {
+                var iDiv = document.createElement('div');
+                room = room + 1;
+                iDiv.id = 'block';
+                iDiv.name = 'room' + String(room);
+                iDiv.innerHTML = "<p id='room" + String(room) + "'>" + "Room : " + String(room) + "<input type='text' list='rooms' name='room" + String(room) + "'> \
+                                  <input type='button' value='x' onclick='removeRoom()'></p>"
+                document.getElementById('Container').append(iDiv);
+            }
+
+            function removeRoom() {
+                var rm = document.getElementById('room' + String(room));
+                rm.parentNode.removeChild(rm);
+                room = room - 1;
+            }
+
+        </script>
 {% endblock %}
