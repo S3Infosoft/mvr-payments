@@ -3,3 +3,4 @@ store/pending/*
 store/done/*
 
 database/database.db
+.vscode/settings.json
