@@ -2,7 +2,6 @@ from flask_sqlalchemy import SQLAlchemy
 import hashlib
 
 from app.init import app
-from app.auth import token_serializer
 
 database = SQLAlchemy(app)
 
@@ -103,6 +102,15 @@ class payment(database.Model):
         self.txnid   = data['txnid']
         self.datetime = data['datetime']
         self.cmnt = data['cmnt']
+
+    def update(self,data):
+        self.payamnt = data['payamnt']
+        self.txntype = data['txntype']
+        self.paymode = data['paymode']
+        self.txnid   = data['txnid']
+        self.datetime = data['datetime']
+        self.cmnt = data['cmnt']
+
 
     def get_json(self):
         data = {
