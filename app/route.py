@@ -1,70 +1,19 @@
-from flask import request, abort, redirect, Response, url_for, render_template
-from flask_login import LoginManager, login_required, login_user, logout_user, current_user
-import json
-
-import config
 from app.init import app
-from app.model import reservation, database, payment, User, guest
-from app.auth import authentication
+from app.model import reservation
+from flask import json
 
+from app.routes.login import login_api, login_required
+from app.routes.guest import guest_api
+from app.routes.reservation import reservation_api
+from app.auth import jwt_required, fresh_jwt_required
 
-
-login_manager = LoginManager()
-login_manager.login_view = 'login'
-login_manager.init_app(app)
-
-
-@login_manager.user_loader
-def load_user(userid):
-    return User.query.get(userid)
-
-@app.route('/dashboard', methods=['POST','GET'])
-@login_required
-def dashboard():
-    return render_template('dashboard.html',User = current_user.email)
-
-
-@app.route('/login',methods=['GET','POST'])
-def login():
-    if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
-
-        reg_usr = User.query.get(email)
-        if reg_usr != None and reg_usr.verify(password):
-            print('logged in..')
-            login_user(reg_usr)
-            return redirect(url_for('dashboard'))
-        else:
-            err = 'Email and password didnt matched'
-            return render_template('login.html',err = err)
-    else:
-        return render_template('login.html')
-
-@app.route('/signup' , methods = ['GET' , 'POST'])
-def signup():
-    err = None
-    if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
-        new_user = User.query.get(email)
-
-        if new_user == None:
-            new_user = User(email,password)
-        else:
-            err = 'User already present with this email'
-            return render_template('signup.html',err = err)
-        
-        database.session.add(new_user)
-        database.session.commit()
-        login_user(new_user)
-
-        return redirect(url_for('dashboard'))
-    else:
-        return render_template('signup.html')
+app.register_blueprint(login_api)
+app.register_blueprint(guest_api)
+app.register_blueprint(reservation_api)
 
 @app.route('/')
 @login_required
+@jwt_required
 def index():
     users = reservation.query.all()
     alluser = []
@@ -72,140 +21,4 @@ def index():
         alluser.append(usr.get_json())
     return json.dumps(alluser)
 
-# -----------------------------------------------------------------------------------------
-#                                   Guest
-# -----------------------------------------------------------------------------------------
 
-@app.route('/%s/guest/new' % config.VERSION, methods=['POST','GET'])
-@login_required
-def GuestNew():
-    if request.method == 'POST':
-        if request.form :
-            if guest.query.filter_by(email = request.form['email']).first() is None:
-                new_guest = guest(request.form)
-                database.session.add(new_guest)
-                database.session.commit()
-
-                return render_template('dashboard.html',msg='User %s Registered' % new_guest.name,
-                                       GuestView= True,
-                                       data=new_guest)
-            else:
-                err = 'Email is already Registered'
-                return render_template('guest/create.html', err = err)
-        else:
-            render_template('guest/create.html')
-
-    return render_template('guest/create.html')
-
-@app.route('/%s/guest/show' % config.VERSION, methods=['POST','GET'])
-@login_required
-def GuestShow():
-    data = None
-    if request.method == 'POST':
-        if request.form:
-            email = request.form['email']
-            g = guest.query.get(email)
-            if g:
-                return render_template('guest/show.html',data=g)
-
-            else:
-                return render_template('guest/show.html',data=None , err = 'No any Guest with this Email')
-    return render_template('guest/show.html',data=data)
-
-@app.route('/%s/guest/edit/<email>' % config.VERSION, methods=['POST','GET'] )
-@login_required
-def GuestEdit(email):
-    data = guest.query.get(email)
-    if request.method == 'POST':
-        if request.form:
-            updated_data = request.form
-            data.update(updated_data)
-            database.session.commit()
-            return render_template('guest/show.html',data=data,msg = "Data updated Successfully")
-        else:
-            return render_template('guest/edit.html',data=data)
-    return render_template('guest/edit.html',data=data)
-
-
-# -----------------------------------------------------------------------------------------
-#                                   Reservation
-# -----------------------------------------------------------------------------------------
-@app.route('/%s/reservation/new/<email>' % config.VERSION, methods=['POST','GET'])
-@login_required
-def ResNew(email):
-    sel_guest = guest.query.get(email)
-    if request.method == 'POST':
-        if request.form:
-            new_res = reservation(request.form)
-            sel_guest.reservation.append(new_res)
-            database.session.add(new_res)
-            database.session.commit()
-            return render_template('dashboard.html',msg='New Reservation Added')
-        else:
-            return render_template('reservation/create.html',data=sel_guest)
-
-    return render_template('reservation/create.html',data=sel_guest)
-            
-        
-
-@app.route('/%s/reservation/show' % config.VERSION, methods=['POST','GET'])
-@login_required
-def ReservationShow():
-    data = None
-    if request.method == 'POST':
-        if request.form:
-            email = request.form['email']
-            g = guest.query.get(email)
-            return render_template('reservation/show.html',data=g.reservation)
-    return render_template('reservation/show.html',data=data)
-
-'''
-@app.route('/%s/reservation/edit/<email>' % config.VERSION, methods=['POST','GET'] )
-@login_required
-def GuestEdit(email):
-    data = reservation.query.get(email)
-    if request.method == 'POST':
-        
-'''
-
-@app.route('/v1/select/<id>')
-@authentication.login_required
-def select(id):
-    sel_usr = reservation.query.filter_by(id = id).first()
-    if sel_usr is None:
-        return 'no user with id = %s' % id
-    return json.dumps(sel_usr.get_json())
-
-
-@app.route('/v1/create/', methods = ['POST'])
-@authentication.login_required
-def create():
-    data = request.get_json()
-    user = reservation(data)
-    database.session.add(user)
-    database.session.commit()
-    return str('Data Updated Successfully')
-
-@app.route('/v1/delete/<id>')
-@authentication.login_required
-def delete(id):
-    usr_to_delete = reservation.query.filter_by(id = id).first()
-    if usr_to_delete == None:
-        return 'no data for id %s' % id
-    else:
-        database.session.delete(usr_to_delete)
-        database.session.commit()
-
-        return 'data for id %s deleted successfully' % id
-
-@app.route('/v1/update/<id>',methods=['POST'])
-@authentication.login_required
-def update(id):
-    data = request.get_json()
-    usr = reservation.query.filter_by(id = id).first()
-    if usr == None:
-        return 'not existing user for id : %s' % id
-    usr.update(data)
-    database.session.commit()
-
-    return 'data update successfully'
