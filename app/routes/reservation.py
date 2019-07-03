@@ -12,11 +12,11 @@ import config
 
 reservation_api = Blueprint('reservation_api',__name__)
 
-@reservation_api.route('/%s/reservation/create/<email>' % config.VERSION, methods = ['POST'])
-@fresh_jwt_required
-def reservation_create(email):
+@reservation_api.route('/%s/reservation/create' % config.VERSION, methods = ['POST'])
+#@fresh_jwt_required
+def reservation_create():
     data = request.get_json()
-    sel_guest = guest.query.get(email)
+    sel_guest = guest.query.get(data['email'])
 
     if sel_guest is None: return 404
     
@@ -25,10 +25,10 @@ def reservation_create(email):
     database.session.add(new_res)
     database.session.commit()
 
-    return 200
+    return json.dumps(new_res.get_json())
 
 @reservation_api.route('/%s/reservation/select/<id>' % config.VERSION, methods = ['GET'])
-@fresh_jwt_required
+#@fresh_jwt_required
 def reservation_select(id):
     if id == 'all':
         res = reservation.query.all()
@@ -42,10 +42,10 @@ def reservation_select(id):
         
         if res is None: return 404
         
-        return res.get_json()
+        return json.dumps(res.get_json())
 
 @reservation_api.route('/%s/reservation/guest/<email>' % config.VERSION, methods = ['GET'])
-@fresh_jwt_required
+#@fresh_jwt_required
 def reservation_guest(email):
     sel_guest = guest.query.get(email)
     
@@ -58,7 +58,7 @@ def reservation_guest(email):
     return json.dumps(guest_res_all)
 
 @reservation_api.route('/%s/reservation/update/<id>' % config.VERSION, methods = ['POST'])
-@fresh_jwt_required
+#@fresh_jwt_required
 def reservation_update(id):
     sel_res = reservation.query.get(id)
     
@@ -66,17 +66,17 @@ def reservation_update(id):
     
     data = request.get_json()
     sel_res.update(data)
-    database.commit()
+    database.session.commit()
 
-    return 202
+    return json.dumps(sel_res.get_json())
 
-@reservation_api.route('/%s/reservation/delete/<id>' % config.VERSION, methods = ['POST'])
-@fresh_jwt_required
+@reservation_api.route('/%s/reservation/delete/<id>' % config.VERSION)
+#@fresh_jwt_required
 def reservation_delete(id):
     sel_res = reservation.query.get(id)
     
     if sel_res is None: return 404
     
     database.session.delete(sel_res)
-    database.commit()
-    return 202
+    database.session.commit()
+    return 'reservation %s deleted' % id
