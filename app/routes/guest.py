@@ -11,18 +11,16 @@ guest_api = Blueprint('guest_api',__name__)
 
 # ----------------------------------------------------------------
 
-@guest_api.route('/%s/guest/select/<email>')
-@login_required
-@fresh_jwt_required
+@guest_api.route('/%s/guest/select/<email>' % config.VERSION)
+#@fresh_jwt_required
 def guest_select(email):
     sel_guest = guest.query.get(email)
     if sel_guest is None:
         return 404
     return json.dumps(sel_guest.get_json())
 
-@guest_api.route('/%s/guest/create', methods = ['POST'])
-@login_required
-@fresh_jwt_required
+@guest_api.route('/%s/guest/create' % config.VERSION , methods = ['POST'])
+#@fresh_jwt_required
 def guest_create():
     data = request.get_json()
     if guest.query.get(data['email']) is None:
@@ -33,9 +31,8 @@ def guest_create():
     else:
         return 404
 
-@guest_api.route('/%s/guest/update/<email>',methods = ['POST'])
-@login_required
-@fresh_jwt_required
+@guest_api.route('/%s/guest/update/<email>' % config.VERSION ,methods = ['POST'])
+#@fresh_jwt_required
 def guest_update(email):
     data = request.get_json()
     sel_guest = guest.query.get(email)

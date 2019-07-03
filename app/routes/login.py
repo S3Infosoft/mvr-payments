@@ -18,7 +18,7 @@ login_api = Blueprint('login_api',__name__)
 
 
 login_manager = LoginManager()
-login_manager.login_view = 'login'
+login_manager.login_view = 'login_api.login'
 login_manager.init_app(app)
 
 @login_api.route('/dashboard', methods=['POST','GET'])
@@ -29,7 +29,7 @@ def dashboard():
 
 
 
-@login_api.route('login', methods=['POST','GET'])
+@login_api.route('/login', methods=['POST','GET'])
 def login():
     if request.method == 'POST':
         email    = request.form['email']
